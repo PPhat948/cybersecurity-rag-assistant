@@ -5,29 +5,31 @@ The Cybersecurity RAG Assistant is designed as a standalone, containerized appli
 
 ## System Diagram
 
-<!-- Paste your system diagram image here -->
+<img width="1669" height="1348" alt="system_diagram" src="https://github.com/user-attachments/assets/f6f2807d-a221-4be1-b7bf-e34d4a79af4c" />
 
-### 1. Data Ingestion & OCR
-*   **Input:** User-provided documents in `./dataset` (Markdown and PDF formats).
-*   **OCR Processing:**
-    *   **Vision Model:** The system uses `scb10x/typhoon-ocr1.5-2b` (a 2-billion parameter VLM) to process PDF files.
-    *   **Process:** PDF pages are rendered into images using `PyMuPDF` and then passed to the Typhoon model to generate markdown-formatted text.
-*   **Text Splitting:** Processed text is split into chunks of 1000 characters with a 200-character overlap using `RecursiveCharacterTextSplitter`.
-*   **Embeddings:** Chunks are converted into vector embeddings using `BAAI/bge-m3` (running locally via HuggingFace).
-*   **Vector Store:** Vectors are indexed and stored locally using `FAISS`.
+## Pipeline Details
 
-### 2. Retrieval Engine
-*   **Query Analysis:** User questions are converted into embeddings using the same `BAAI/bge-m3` model.
-*   **Similarity Search:** FAISS retrieves the Top-K (default: 4) most relevant text chunks based on cosine similarity.
-*   **Score Threshold:** (Implicit) The retriever ranks documents by relevance to ensure quality context injection.
+The system operates entirely within a **Docker Environment**, ensuring consistent performance and isolation.
 
-### 3. Generation Engine (RAG)
-*   **LLM:** `Llama-3.1-8B-Instruct` (4-bit quantized) running on `Ollama`.
-*   **Prompt Engineering:**
-    *   **System Prompt:** Enforces a persona of a cybersecurity expert.
-    *   **Constraints:** Strictly instructs the model to answer *only* from the provided context and to output "I don't know" if the answer is missing.
-    *   **Citation Requirement:** Mandates that every answer must refer to specific source files found in the metadata.
-*   **Output:** The model generates a structured JSON response containing the answer string and a list of source filenames.
+### 1. Ingestion Pipeline
+The ingestion process transforms raw documents into a searchable vector index.
+
+1.  **Raw Document**: Users place **PDF** or Markdown files in the `dataset/` folder.
+2.  **OCR Model (TyphoonOCR1.5)**: PDF files are processed visually by the Typhoon 1.5 Vision-Language Model to extract text and structure into **Markdown**.
+3.  **Chunking**: The Markdown text is split into smaller **Text Chunks** using a **Langchain Text Splitter** (RecursiveCharacterTextSplitter) to ensure optimal context window usage.
+4.  **Document Embedding Model (BGE-M3)**: Each chunk is converted into a high-dimensional **Vector**.
+5.  **Vector Database (Faiss)**: Vectors are stored and indexed in a local Faiss index for efficient retrieval.
+
+### 2. Retrieval & Generation Pipeline
+The RAG pipeline handles user queries and generates grounded answers.
+
+1.  **User Question**: The **User** submits a question through the interface (CLI or Web).
+2.  **API Service (FastAPI)**: The application receives the request and orchestrates the flow.
+3.  **Embedding Query**: The question is passed to the **Embedding Model (BGE-M3)** to create a query vector.
+4.  **Retriever**: The system searches the **Vector Database (Faiss)** for the **Top K Chunks** most similar to the query.
+5.  **Prompt Template**: The retrieved chunks are combined with the user question into a **Final Prompt** that enforces strict grounding rules.
+6.  **LLM (Llama3.1-8B)**: The model processes the prompt and generates a **Final Answer** with citations.
+7.  **Response**: The answer is returned to the User via the API.
 
 ## Infrastructure & Optimization
 
