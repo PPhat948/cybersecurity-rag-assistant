@@ -22,17 +22,18 @@ Unlike general-purpose chatbots, this assistant:
 
 ```text
 cybersecurity-rag/
-├── app/
+├── app/                # Application Source Code
 │   ├── api.py          # FastAPI application entry point
 │   ├── ingestion.py    # Document processing (Typhoon OCR) and vector indexing
 │   ├── models.py       # Pydantic data models
 │   └── rag_engine.py   # Core RAG logic and LLM interaction
-├── dataset/            # Directory for source documents (.md, .pdf)
-├── hf_cache/           # Local cache for HuggingFace models (Embeddings)
-├── ollama_cache/       # Local cache for Ollama models (Llama 3.1)
+├── dataset/            # Source documents (.md, .pdf)
+├── notebooks/          # Jupyter Notebooks
+│   └── evaluation_example.ipynb # System evaluation tests
+├── ARCHITECTURE.md     # System Architecture Documentation
 ├── docker-compose.yml  # Docker services configuration
 ├── Dockerfile          # Container image definition
-├── entrypoint.sh       # Startup script for Ollama and API
+├── entrypoint.sh       # Startup script
 └── requirements.txt    # Python dependencies
 ```
 
@@ -117,5 +118,4 @@ To verify the system's performance against predefined test cases (including OWAS
 | **4. Evaluation Examples** | [notebooks/evaluation_example.ipynb](notebooks/evaluation_example.ipynb) |
 | **5. Source Code** | `app/` directory |
 
----
-*Built for the Datafarm Cybersecurity RAG Assessment.*
+
