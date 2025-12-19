@@ -1,0 +1,7 @@
+hf_cache/
+ollama_cache/
+faiss_index/
+__pycache__/
+*.pyc
+.git/
+.env

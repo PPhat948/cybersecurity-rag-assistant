@@ -1,0 +1,20 @@
+# Large Model Caches
+hf_cache/
+ollama_cache/
+
+# Vector Store (Generated)
+faiss_index/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

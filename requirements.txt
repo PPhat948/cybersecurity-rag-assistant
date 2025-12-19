@@ -1,0 +1,18 @@
+langchain
+langchain-community
+langchain-ollama
+langchain-huggingface
+faiss-cpu
+fastapi
+uvicorn
+pydantic
+sentence-transformers
+pymupdf
+# AI/OCR Dependencies
+torch
+torchvision
+transformers
+accelerate
+pillow
+# bitsandbytes # Optional for quantization
+

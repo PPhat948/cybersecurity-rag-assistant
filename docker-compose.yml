@@ -1,0 +1,22 @@
+services:
+  rag-app:
+    build: .
+    volumes:
+      # Mount the dataset directory so we can ingest files
+      - ./dataset:/app/dataset
+      # Mount a volume for Ollama data to persist the model between restarts
+      - ./ollama_cache:/root/.ollama
+      # Cache Hugging Face models (Embeddings) to avoid re-downloading
+      - ./hf_cache:/root/.cache/huggingface
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_BASE_URL=http://localhost:11434
+    # Enable NVIDIA GPU Support
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
